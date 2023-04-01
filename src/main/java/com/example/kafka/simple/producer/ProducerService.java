@@ -15,7 +15,7 @@ import java.util.UUID;
 @Slf4j
 public class ProducerService {
 
-    private final int sleepInterval = 1000;
+    private final int sleepInterval = 50;
 
     @Value("${produce.dummy.payload}")
     private boolean produceDummyPayload;
