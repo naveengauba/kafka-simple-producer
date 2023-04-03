@@ -12,7 +12,7 @@ public class KafkaSimpleProducerApplication implements DisposableBean {
 
     private static ConfigurableApplicationContext context;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         context = SpringApplication.run(KafkaSimpleProducerApplication.class, args);
         ProducerService producerService = context.getBean(ProducerService.class);
         producerService.doProduceMessages();

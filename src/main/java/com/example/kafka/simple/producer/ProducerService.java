@@ -15,8 +15,6 @@ import java.util.UUID;
 @Slf4j
 public class ProducerService {
 
-    private final int sleepInterval = 50;
-
     @Value("${produce.dummy.payload}")
     private boolean produceDummyPayload;
 
@@ -32,19 +30,18 @@ public class ProducerService {
         this.jsonMessageProducer = jsonMessageProducer;
     }
 
-    public void doProduceMessages() {
+    public void doProduceMessages() throws InterruptedException {
+        int sleepInterval = 50;
         if (produceDummyPayload) {
             byte[] smallByteBuffer = new byte[1024];
             Arrays.fill(smallByteBuffer, (byte) '0');
             String message = new String(smallByteBuffer);
-            try {
-                while (true) {
-                    simpleProducer.sendMessageAsync(message);
-                    Thread.sleep(sleepInterval);
-                }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+
+            while (true) {
+                simpleProducer.sendMessageAsync(message);
+                Thread.sleep(sleepInterval);
             }
+
         } else {
             log.info("Producing dummy messages is disabled..");
         }
@@ -53,14 +50,12 @@ public class ProducerService {
             byte[] largeByteBuffer = new byte[100 * 1024];
             Arrays.fill(largeByteBuffer, (byte) '0');
             OmsMessage omsMessage = mockOmsMessage(largeByteBuffer);
-            try {
-                while (true) {
-                    jsonMessageProducer.sendMessageAsync(omsMessage);
-                    Thread.sleep(sleepInterval);
-                }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+
+            while (true) {
+                jsonMessageProducer.sendMessageAsync(omsMessage);
+                Thread.sleep(sleepInterval);
             }
+
         } else {
             log.info("Producing OMS messages is disabled..");
         }
